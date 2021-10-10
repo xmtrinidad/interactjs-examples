@@ -46,9 +46,9 @@ export class HomeView extends LitElement {
         <div class="draggable-thing"></div>
       
         <div class="dropzones">
-          <app-dropzone id="dz-1" bg="#7B1FA2"></app-dropzone>
-          <app-dropzone id="dz-2" bg="#536DFE"></app-dropzone>
-          <app-dropzone id="dz-3" bg="#009688"></app-dropzone>
+          <app-dropzone id="dz-1" initialbg="#7B1FA2"></app-dropzone>
+          <app-dropzone id="dz-2" initialbg="#536DFE"></app-dropzone>
+          <app-dropzone id="dz-3" initialbg="#009688"></app-dropzone>
         </div>
       </div>
     `;
@@ -95,9 +95,15 @@ export class HomeView extends LitElement {
       this.interact(element)
         .dropzone({
           ondragenter: (event) => {
+            const element = this.shadowRoot.querySelector(`#${event.target.id}`);
+            element.setAttribute('hoverbg', '#FFC107');
+
             console.log('Entered ' + event.target.id)
           },
           ondragleave: (event) => {
+            const element = this.shadowRoot.querySelector(`#${event.target.id}`);
+            element.removeAttribute('hoverbg');
+
             console.log('Exited ' + event.target.id)
           },
           ondrop: (event) => {
