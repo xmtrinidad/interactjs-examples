@@ -6,6 +6,7 @@ import '../components/app-dropzone';
 export class HomeView extends LitElement {
 
   @property({ type: Object }) interact;
+  @property({ type: Object }) dropzones;
 
   static styles = [
     SHARED_STYLES,
@@ -34,8 +35,13 @@ export class HomeView extends LitElement {
         text-align: center;
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
-        box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
         z-index: -1;
+        transition: box-shadow 0.5s;
+      }
+
+      .dropzones[hint] {
+        box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+        border: 4px dashed grey;
       }
     `
   ];
@@ -65,6 +71,7 @@ export class HomeView extends LitElement {
 
   firstUpdated() {
     const dzElements = Array.from(this.shadowRoot.querySelectorAll('app-dropzone'));
+    this.dropzones = this.shadowRoot.querySelector('.dropzones');
     this.moveThing();
 
     this.createDropzones(dzElements)
@@ -72,11 +79,14 @@ export class HomeView extends LitElement {
 
   moveThing() {
     const position = { x: 0, y: 0 }
-
+    const realThis = this;
     this.interact('.draggable-thing').draggable({
       listeners: {
         start(event) {
-          // console.log(event.type, event.target)
+          console.log('Drag started', event.target);
+          // console.log(this.dropzones);
+          realThis.dropzones.setAttribute('hint', '');
+          console.log(realThis);
         },
         move(event) {
           position.x += event.dx
@@ -85,6 +95,10 @@ export class HomeView extends LitElement {
           event.target.style.transform =
             `translate(${position.x}px, ${position.y}px)`
         },
+        end(event) {
+          console.log('Drag ended', event.target);
+          realThis.dropzones.removeAttribute('hint');
+        }
       }
     });
 
